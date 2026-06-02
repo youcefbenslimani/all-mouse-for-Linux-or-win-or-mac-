@@ -1,0 +1,65 @@
+=======================================================================
+               Universal Mouse Configurator v9 
+                      Linux Setup Guide
+=======================================================================
+
+📋 DESCRIPTION
+───────────────────────────────────────────────────────────────────────
+This is a standalone GUI application for configuring mouse options 
+(DPI, RGB lighting, Polling Rate) on various Linux distributions. 
+The executable is a self-contained ELF binary and does not require 
+Python or any external Python libraries to be installed on your system.
+
+
+⚠️ CRITICAL STEP: UNLOCKING HARDWARE ACCESS (Udev Rules)
+───────────────────────────────────────────────────────────────────────
+By default, Linux limits regular users from directly reading or writing 
+to HID interface ports (such as mice). To run this application WITHOUT 
+requiring root/sudo privileges every time, we have included an intelligent 
+permission script that automatically handles this for any connected mouse.
+
+Steps to apply:
+1. Open your Terminal inside the application folder.
+2. Run the automated permission script using this command:
+   ./setup_permissions.sh
+
+3. The system will prompt you for your administrator (sudo) password 
+   to write the rule files.
+4. The script will auto-detect your mouse and immediately open up its 
+   active communication port.
+
+
+🚀 LAUNCHING THE APPLICATION
+───────────────────────────────────────────────────────────────────────
+Once permissions are successfully applied via the script above, you can 
+launch the program immediately:
+
+1. Ensure the application has execution permissions:
+   chmod +x MouseConfigurator
+
+2. Launch it via double-click or using the terminal:
+   ./MouseConfigurator
+
+💡 Note: If you are using an older environment or a Wayland-based display 
+server and encounter UI launching issues, enforce the X11 compatibility layer:
+   QT_QPA_PLATFORM=xcb ./MouseConfigurator
+
+
+🔧 TROUBLESHOOTING & COMMON ISSUES
+───────────────────────────────────────────────────────────────────────
+• Issue: "Permission denied" when accessing hidraw interfaces
+  Solution: Make sure you executed `./setup_permissions.sh` first. If it 
+  persists, physically unplug your mouse (or wireless USB dongle) and plug 
+  it back in to force the kernel to update its permission attributes.
+
+• Issue: Missing library error regarding "libfuse.so.2"
+  Solution: Your Linux distribution needs the fundamental FUSE library package:
+  - Ubuntu/Debian/Mint: sudo apt install libfuse2
+  - Fedora:             sudo dnf install fuse-libs
+  - Arch Linux:         sudo pacman -S fuse2
+
+• Issue: Mouse temporarily freezes upon application startup
+  Solution: The application securely connects to the mouse configuration 
+  sub-interfaces (Interface 2/3) and NOT the tracking sensor interface. 
+  If a freeze occurs, close the app immediately and replug your mouse.
+=======================================================================
